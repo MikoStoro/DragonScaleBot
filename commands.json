@@ -1,0 +1,23 @@
+{
+    "commands" : [
+        {
+            "name" : "k",
+            "description" : "Alias for 'd' smart roll command" 
+        },
+        {
+            "name" : "d",
+            "description" : "Smart Roll command \n Usage: d[number of faces] [+/-] [modifier] \n Performs a roll using DragonScale rules. Adding the modifier is optional."
+        },
+        {
+            "name" : "roll",
+            "description" : "Dice Roll command \n Usage: roll [number of dice][k/d][number of faces] [+/-] [modifier]... \n Performs regular roll. You can add any number of dice and modifiers."
+        },
+        {
+            "name" : "prefix",
+            "description" : "Prefix change command. \n Usage: prefix [new prefix] \n Changes bot's prefix." 
+        },
+        {
+            "name" : "help",
+            "description" : "Help command. \n Usage: help [command name] \n Shows description of given command."
+        }]
+}

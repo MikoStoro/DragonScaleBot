@@ -1,4 +1,3 @@
-//var input =  ".roll -k20 + 2k6 + 64 - 2k12 + 13";
 const { Client, GatewayIntentBits } = require('discord.js');
 const client = new Client({
 	intents: [
@@ -11,7 +10,7 @@ const client = new Client({
 
 var configObj = require("./config.json");
 var prefix = configObj.prefix;
-var commands = configObj.commands;
+var commands = require("./commands.json").commands;
 var token = configObj.token;
 var msg;
 
@@ -69,9 +68,23 @@ function smartRoll(facesNum, modifier){
 }
 
 
+function setPrefix(data){
+    var p = data.trim().split(" ");
+    
+    if(!p || p == ""){
+        msg.reply("Please specify a prefix");
+        return;
+    }
 
-function setPrefix(newPrefix){
-
+    configObj.prefix = p;
+    prefix = p;
+    var configStr = JSON.stringify(configObj);
+    
+    const fs = require('fs');
+    fs.writeFile('config.json', configStr, (err) => {
+        if (err) msg.reply("Sorry, could not save data");
+    })
+    msg.reply("Prefix changed!")
 }
 
 function parseRollData(data){
@@ -199,6 +212,23 @@ function fullParse(data){
     return tokens;
 }
 
+function getHelp(data){
+    var name = data.trim().split(" ")[0];
+
+    if(!name){
+        msg.reply("No command specified");
+        name = "help";
+    }
+
+    for(i in commands){
+        if(commands[i].name == name){
+            msg.reply(commands[i].description);
+            return;
+        }
+    }
+    msg.reply("Command " + name  + " does not exist");
+}
+
 function fullRoll(tokens){
     var result = 0;
     var message = "Rolled: ";
@@ -251,6 +281,10 @@ function evaluate(command, data){
             break;
 
         case "prefix":
+            setPrefix(data.toString());
+            break;
+        case "help":
+            getHelp(data);
             break;
         default:
             //command not found
@@ -281,7 +315,7 @@ client.on("messageCreate", (message) => {
         let comandExists = false;
 
         for(let i in commands){
-            comm = commands[i];
+            comm = commands[i].name;
             if(input.startsWith(comm)){
                 input = input.slice(comm.length);
                 comandExists = evaluate(comm, input);
